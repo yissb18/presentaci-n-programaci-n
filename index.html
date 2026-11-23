@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AeroVento: presentación del proyecto</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06130E;--bg2:#12382A;--ink:#EAF6F0;--mut:#9DB8AB;--panel:rgba(255,255,255,.07);--line:rgba(255,255,255,.16);--brand:#3DDC97;--valle:#5AA9FF;--normal:#FFC857;--punta:#FF6B81;--on:#06130E;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#EDF6F1;--bg2:#CBE8D9;--ink:#10261D;--mut:#46594F;--panel:rgba(255,255,255,.8);--line:rgba(16,38,29,.18);--brand:#00855A;--valle:#1F6FD1;--normal:#B87500;--punta:#C72845;--on:#fff;color-scheme:light}}
+:root[data-theme="dark"]{--bg:#06130E;--bg2:#12382A;--ink:#EAF6F0;--mut:#9DB8AB;--panel:rgba(255,255,255,.07);--line:rgba(255,255,255,.16);--brand:#3DDC97;--valle:#5AA9FF;--normal:#FFC857;--punta:#FF6B81;--on:#06130E;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(900px 520px at 85% -10%,var(--bg2),transparent),var(--bg);color:var(--ink);font:400 clamp(16px,1.5vw,20px)/1.5 Inter,system-ui,sans-serif;overflow:hidden}
+#deck{position:relative;height:100%}
+.slide{position:absolute;inset:0 0 72px 0;padding:clamp(18px,4vw,56px);overflow-y:auto;display:flex;flex-direction:column;justify-content:center;gap:18px;opacity:0;visibility:hidden;transition:opacity .5s,visibility .5s}
+.slide.on{opacity:1;visibility:visible}
+.slide.on .rv{animation:up .7s both;animation-delay:calc(var(--i,0)*110ms)}
+@keyframes up{from{opacity:0;transform:translateY(28px)}}
+h1,h2,h3{font-family:"Space Grotesk",system-ui,sans-serif;margin:0;line-height:1.05}
+h1{font-size:clamp(46px,10vw,120px);background:linear-gradient(90deg,var(--brand),var(--valle));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:clamp(30px,5vw,56px)}h3{font-size:clamp(20px,2.4vw,26px)}
+p{margin:0}.mut{color:var(--mut)}
+.kick{font-weight:600;letter-spacing:.18em;color:var(--normal);font-size:.8em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.g32{grid-template-columns:1.5fr 1fr}
+.code.num{counter-reset:l}.code.num .ln::before{counter-increment:l;content:counter(l);display:inline-block;width:2.4em;margin-right:12px;color:#5E7F6F;text-align:right}.ln.bs{margin-top:12px}.code.num.f .ln{opacity:.5}.code.num.f .ln.hl{opacity:1}
+@media (max-width:820px){.grid2,.grid3,.g32{grid-template-columns:1fr}.slide{justify-content:flex-start}}
+.panel,details{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;backdrop-filter:blur(6px)}
+details summary{cursor:pointer;list-style:none;display:flex;flex-direction:column;gap:10px}
+details summary::-webkit-details-marker{display:none}
+details svg{width:56px;height:56px;color:var(--brand)}
+details[open]{border-color:var(--brand)}details p{margin-top:12px;color:var(--mut)}
+button,select,input{font:inherit;color:inherit}
+.btn{background:var(--brand);color:var(--on);border:0;border-radius:999px;padding:12px 22px;font-weight:600;cursor:pointer;min-height:46px}
+.btn.o{background:transparent;color:var(--ink);border:2px solid var(--line)}.btn.o.on{border-color:var(--brand);color:var(--brand)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--panel);font-size:.85em}
+.hours{display:grid;grid-template-columns:repeat(24,1fr);gap:4px}
+.hb{border:0;border-radius:8px;height:clamp(44px,8vw,84px);font-weight:700;color:#06130E;cursor:pointer;opacity:.5;transition:.2s;padding:0}
+.hb.sel{opacity:1;transform:translateY(-8px);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.v{background:var(--valle)}.n{background:var(--normal)}.p{background:var(--punta)}
+#sky{display:flex;gap:20px;align-items:center}
+#sky svg{width:clamp(70px,12vw,120px);height:auto;transition:color .3s}
+.code{background:#07110D;color:#D5EBDF;border-radius:16px;padding:16px 8px;font:400 clamp(12px,1.5vw,17px)/1.7 "JetBrains Mono",ui-monospace,monospace;overflow-x:auto;white-space:pre;border:1px solid var(--line)}
+.ln{display:block;padding:0 12px;border-left:3px solid transparent;transition:.3s;min-height:1.7em}
+.code.f .ln{opacity:.35}.code.f .ln.hl{opacity:1;background:rgba(61,220,151,.14);border-left-color:#3DDC97}
+.k{color:#FF9DB0}.s{color:#FFD58A}.n2{color:#8FC7FF}.c{color:#6E8F7F}
+label{display:block;margin-bottom:14px}label b{float:right;color:var(--brand)}
+input[type=range]{width:100%;accent-color:var(--brand)}
+select{width:100%;background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:10px;min-height:46px}
+select option{color:#10261D}
+.res{display:flex;justify-content:space-between;font-weight:600;margin-top:12px}.res b{font-family:"Space Grotesk",sans-serif;font-size:1.5em}
+.bar{height:16px;border-radius:8px;background:var(--line);overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .5s}
+.bar.b2 i{background:var(--mut)}
+.verdict{font:700 clamp(20px,3vw,28px)/1.2 "Space Grotesk",sans-serif;color:var(--brand);margin-top:14px}
+.paper{background:#fff;color:#10261D;border-radius:12px;padding:0 0 14px;font-size:clamp(12px,1.3vw,15px);box-shadow:0 20px 50px rgba(0,0,0,.4);overflow:hidden}
+.paper .hd{background:#006C49;color:#fff;padding:12px 16px;display:flex;justify-content:space-between}
+.paper .bk{margin:10px 14px 0;padding:8px 10px;border:2px solid #D3DFD8;border-radius:8px;transition:.3s}
+.paper.pick .bk{opacity:.3}.paper.pick .bk.hot{opacity:1;border-color:#00A36C;box-shadow:0 0 0 4px rgba(0,163,108,.25)}
+.paper b.big{font:700 1.8em "Space Grotesk",sans-serif;color:#006C49}
+.paper table{width:100%;border-collapse:collapse}.paper td{padding:2px 0}.paper td:last-child{text-align:right}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.flow .btn.o{font-family:"JetBrains Mono",monospace}
+.rot{transform-origin:200px 170px;animation:spin 9s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.cl{animation:drift 14s ease-in-out infinite alternate}@keyframes drift{to{transform:translateX(40px)}}
+#nav{position:fixed;left:0;right:0;bottom:0;display:flex;gap:10px;align-items:center;justify-content:center;padding:10px 12px calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 40%)}
+#dots{display:flex;gap:8px}#dots button{width:12px;height:12px;border-radius:50%;border:0;background:var(--line);padding:0;cursor:pointer}#dots button.on{background:var(--brand);transform:scale(1.4)}
+#nav .btn{min-height:44px;padding:8px 16px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<section class="slide on" id="portada">
+ <div class="grid2">
+  <div style="display:flex;flex-direction:column;gap:18px">
+   <p class="kick rv">PROYECTO DE ENERGÍA</p>
+   <h1 class="rv" style="--i:1">AeroVento</h1>
+   <p class="rv mut" style="--i:2;font-size:1.25em">Dibujas tu consumo y la app calcula cuánto pagas, qué plan te conviene y te entrega la factura.</p>
+   <div class="row rv" style="--i:3"><span class="chip">Franjas horarias</span><span class="chip">Estratos</span><span class="chip">Factura PDF</span></div>
+   <div class="row rv" style="--i:4"><button class="btn" data-go="1">Empezar</button><span class="mut">Usa ← → o desliza</span></div>
+  </div>
+  <svg viewBox="0 0 400 480" role="img" aria-label="Aerogenerador girando sobre colinas verdes" style="width:100%;max-height:60vh;color:var(--ink)">
+   <defs><radialGradient id="g" cx="50%" cy="36%"><stop offset="0" stop-color="#3DDC97" stop-opacity=".5"/><stop offset="1" stop-color="#3DDC97" stop-opacity="0"/></radialGradient></defs>
+   <circle cx="200" cy="170" r="190" fill="url(#g)"/>
+   <g class="cl" fill="currentColor" opacity=".18"><ellipse cx="90" cy="80" rx="46" ry="14"/><ellipse cx="310" cy="120" rx="38" ry="11"/></g>
+   <path d="M0 420Q100 360 200 410T400 390V480H0z" fill="#0F3A2B"/><path d="M0 452Q120 402 240 442T400 430V480H0z" fill="#16664A"/>
+   <path d="M192 175h16l7 255h-30z" fill="currentColor" opacity=".9"/>
+   <g class="rot" fill="currentColor"><path d="M200 170l-8-140q8-20 16 0z"/><path d="M200 170l-8-140q8-20 16 0z" transform="rotate(120 200 170)"/><path d="M200 170l-8-140q8-20 16 0z" transform="rotate(240 200 170)"/></g>
+   <circle cx="200" cy="170" r="13" fill="#3DDC97"/>
+  </svg>
+ </div>
+</section>
+
+<section class="slide" id="que-hace">
+ <h2 class="rv">Qué hace la app</h2><p class="mut rv" style="--i:1">Toca cada tarjeta para ver el detalle.</p>
+ <div class="grid3">
+  <details class="rv" style="--i:2"><summary><svg viewBox="0 0 64 64" fill="currentColor"><rect x="6" y="30" width="10" height="26" rx="3"/><rect x="22" y="14" width="10" height="42" rx="3"/><rect x="38" y="22" width="10" height="34" rx="3"/><rect x="54" y="38" width="6" height="18" rx="3"/></svg><h3>1. Dibujas tu consumo</h3></summary><p>Tocas o arrastras las 24 barras, de 0 a 5 kWh por hora. Hay botones rápidos para empezar.</p></details>
+  <details class="rv" style="--i:3"><summary><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><path d="M32 8v44M14 52h36M10 20h44"/><path d="M10 20l-6 16h16zM54 20l-6 16h16z"/></svg><h3>2. Comparas los planes</h3></summary><p>Plan por franjas contra plan plano. Ves el total, el ahorro y los consejos al instante.</p></details>
+  <details class="rv" style="--i:4"><summary><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"><path d="M14 6h26l12 12v40H14z"/><path d="M40 6v12h12M24 32h20M24 44h20"/></svg><h3>3. Descargas la factura</h3></summary><p>PDF de 2 páginas con NIT, mes, estrato, códigos de pago y sugerencias de ahorro.</p></details>
+ </div>
+</section>
+
+<section class="slide" id="franjas">
+ <h2 class="rv">Las tres franjas del día</h2>
+ <div class="panel rv" id="sky" style="--i:1"><div id="ic"></div><div><h3 id="t1"></h3><p class="mut" id="t2"></p></div></div>
+ <div class="hours rv" id="hrs" style="--i:2"></div>
+ <div class="row rv" style="--i:3"><button class="btn" id="play">Recorrer el día</button><span class="chip" style="color:var(--valle)">Valle 22:00 a 05:59</span><span class="chip" style="color:var(--normal)">Normal 06:00 a 17:59</span><span class="chip" style="color:var(--punta)">Punta 18:00 a 21:59</span></div>
+</section>
+
+<section class="slide" id="codigo">
+ <h2 class="rv">El código, paso a paso</h2>
+ <div class="row rv" style="--i:1"><button class="btn o on" data-l="py">Python</button><button class="btn o" data-l="js">JavaScript (la app)</button></div>
+ <div class="grid2" style="align-items:start">
+  <div class="code rv" id="cd" style="--i:2"></div>
+  <div class="panel rv" style="--i:3"><div class="row"><button class="btn o" data-s="1">1</button><button class="btn o" data-s="2">2</button><button class="btn o" data-s="3">3</button><button class="btn o" data-s="4">4</button><button class="btn" id="run">Ejecutar</button></div>
+   <h3 id="st" style="margin-top:16px">Elige un paso</h3><p class="mut" id="sd">Resalta las líneas y muestra qué valor produce, con 1 kWh cada hora.</p><div class="code" id="out" style="margin-top:12px;padding:12px"></div></div>
+ </div>
+</section>
+
+<section class="slide" id="python">
+ <h2 class="rv">Código Python completo</h2>
+ <p class="mut rv" style="--i:1">El archivo logica.py, por partes. Toca un bloque para ver su explicación.</p>
+ <div class="row rv" id="chs" style="--i:2"></div>
+ <div class="grid2 g32" style="align-items:start">
+  <div class="code num f rv" id="pc" style="--i:3;max-height:56vh;overflow:auto"></div>
+  <div class="panel rv" style="--i:4"><h3 id="pt"></h3><p class="mut" id="pn" style="margin:8px 0 12px"></p><div class="row"><button class="btn o" id="pbk">Anterior</button><button class="btn" id="pnx">Siguiente bloque</button></div><h3 style="margin-top:18px;font-size:1em">Resultado de ejemplo</h3><div class="code" id="po" style="margin-top:8px;padding:12px"></div></div>
+ </div>
+</section>
+
+<section class="slide" id="calculadora">
+ <h2 class="rv">Pruébalo: calculadora en vivo</h2>
+ <div class="grid2" style="align-items:start">
+  <div class="panel rv" style="--i:1">
+   <label>Valle, kWh por hora <b id="o1"></b><input type="range" id="kv" min="0" max="5" step=".5" value="1"></label>
+   <label>Normal, kWh por hora <b id="o2"></b><input type="range" id="kn" min="0" max="5" step=".5" value="1"></label>
+   <label>Punta, kWh por hora <b id="o3"></b><input type="range" id="kp" min="0" max="5" step=".5" value="1"></label>
+   <label for="est">Estrato</label><select id="est"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select>
+   <label for="cli" style="margin-top:14px">Clima</label><select id="cli"><option value="173">Cálido (menos de 1.000 m)</option><option value="130">Templado o frío (1.000 m o más)</option></select>
+  </div>
+  <div class="panel rv" style="--i:2"><p class="mut">Consumo del mes (30 días): <b id="rk"></b></p>
+   <div class="res"><span>Plan por franjas</span><b id="rf"></b></div><div class="bar"><i id="bf"></i></div>
+   <div class="res"><span>Plan plano</span><b id="rp"></b></div><div class="bar b2"><i id="bp"></i></div>
+   <p class="verdict" id="vd"></p><p class="mut" id="rn"></p></div>
+ </div>
+</section>
+
+<section class="slide" id="factura">
+ <h2 class="rv">La factura por dentro</h2>
+ <div class="grid2" style="align-items:start">
+  <div class="paper rv" id="pp" style="--i:1">
+   <div class="hd"><b>AeroVento</b><span>FACTURA N.º AV-202611-3456012</span></div>
+   <div class="bk" data-k="0">Cliente: María Pérez<br>NIT: 900.123.456-8 · Casa 12 · Estrato 4</div>
+   <div class="bk" data-k="1">Total a pagar<br><b class="big">$552.000</b><br>Referencia de pago: 20261112345600124</div>
+   <div class="bk" data-k="2"><table><tr><td>Valle · 240 kWh</td><td>$120.000</td></tr><tr><td>Normal · 360 kWh</td><td>$288.000</td></tr><tr><td>Punta · 120 kWh</td><td>$144.000</td></tr></table></div>
+   <div class="bk" data-k="3">Código de cliente: 900123456-12 · Convenio: No aplica</div>
+  </div>
+  <div class="rv" style="--i:2"><div class="row" id="chips"><button class="btn o" data-k="0">Cliente y NIT</button><button class="btn o" data-k="1">Resumen de pago</button><button class="btn o" data-k="2">Detalle del mes</button><button class="btn o" data-k="3">Códigos de pago</button></div>
+   <div class="panel" style="margin-top:16px"><h3 id="fh">Toca una zona</h3><p class="mut" id="fd">Ejemplo: 1 kWh cada hora durante 30 días, estrato 4.</p></div></div>
+ </div>
+</section>
+
+<section class="slide" id="mapa">
+ <h2 class="rv">Mapa del código</h2><p class="mut rv" style="--i:1">Cada función hace una sola cosa. Toca una para ver su ejemplo.</p>
+ <div class="flow rv" id="fl" style="--i:2"></div>
+ <div class="panel rv" style="--i:3"><h3 id="mh"></h3><p class="mut" id="md" style="margin:6px 0 12px"></p><div class="code" id="mc"></div></div>
+</section>
+
+</div>
+<div id="nav"><button class="btn o" id="pv" aria-label="Anterior">←</button><div id="dots"></div><span id="cnt" class="mut"></span><button class="btn" id="nx" aria-label="Siguiente">→</button><button class="btn o" id="fs" aria-label="Pantalla completa">Pantalla completa</button></div>
+<script type="text/plain" id="py1">
+HORAS_POR_FRANJA = {
+    "valle":  [0, 1, 2, 3, 4, 5, 22, 23],       # 8 horas
+    "normal": [6, 7, 8, 9, 10, 11, 12, 13,
+               14, 15, 16, 17],                   # 12 horas
+    "punta":  [18, 19, 20, 21],                   # 4 horas
+}
+@@ Un diccionario guarda qué horas pertenecen a cada franja. Convierte la regla escrita en una estructura de datos.
+_FRANJA_DE_HORA = {}
+for franja, horas in HORAS_POR_FRANJA.items():
+    for h in horas:
+        _FRANJA_DE_HORA[h] = franja
+@@ Se construye una sola vez la tabla inversa (hora → franja). Así no se repite un if/elif/else en cada vuelta del ciclo principal.
+def franja_de_hora(hora: int) -> str:
+    """Devuelve 'valle', 'normal' o 'punta' para una hora 0–23."""
+    return _FRANJA_DE_HORA[hora]
+@@ Consulta la tabla: recibe la hora y devuelve su franja. Hace una sola cosa.
+</script>
+<script type="text/plain" id="py2">
+def calcular_por_franjas(consumo: list, precios: dict) -> dict:
+    """
+    Recibe 24 consumos (kWh) y precios por franja.
+    Devuelve desglose por franja y total.
+
+    Patrones usados:
+    - Acumulador: suma kWh y costo por franja dentro del for.
+    - Rastreo: detecta la hora de mayor consumo.
+    """
+@@ Recibe la lista de 24 consumos y los precios por franja, y devuelve un diccionario con el desglose.
+    kwh_por_franja   = {"valle": 0.0, "normal": 0.0, "punta": 0.0}
+    costo_por_franja = {"valle": 0.0, "normal": 0.0, "punta": 0.0}
+
+    hora_pico    = 0
+    consumo_pico = -1.0
+@@ Acumuladores que parten en cero, y las variables para rastrear la hora de mayor consumo.
+    for hora in range(24):
+        kwh    = consumo[hora]
+        franja = franja_de_hora(hora)
+
+        # Acumulador: suma kWh y costo
+        kwh_por_franja[franja]   += kwh
+        costo_por_franja[franja] += kwh * precios[franja]
+
+        # Rastreo: hora con mayor consumo
+        if kwh > consumo_pico:
+            consumo_pico = kwh
+            hora_pico    = hora
+@@ Recorre las 24 horas. Cada una suma sus kWh y su costo en la franja que le toca. El if guarda la hora de mayor consumo.
+    # Redondear para evitar ruido de punto flotante
+    for f in kwh_por_franja:
+        kwh_por_franja[f]   = round(kwh_por_franja[f], 3)
+        costo_por_franja[f] = round(costo_por_franja[f], 2)
+
+    total_kwh    = round(sum(kwh_por_franja.values()), 3)
+    total_costo  = round(sum(costo_por_franja.values()), 2)
+@@ Redondea para evitar errores de punto flotante y calcula los totales.
+    return {
+        "kwh_por_franja":   kwh_por_franja,
+        "costo_por_franja": costo_por_franja,
+        "total_kwh":        total_kwh,
+        "total_costo":      total_costo,
+        "hora_pico":        hora_pico,
+        "consumo_pico_kwh": round(consumo_pico, 3),
+    }
+@@ Devuelve todo junto en un diccionario, para que quien llame elija qué usar.
+</script>
+<script type="text/plain" id="py3">
+def calcular_plan_plano(total_kwh: float, precio_plano: float) -> float:
+    """Total del plan plano = kWh totales × precio fijo."""
+    return round(total_kwh * precio_plano, 2)
+@@ El plan plano es una multiplicación: todos los kWh por un solo precio.
+def comparar_planes(total_franjas: float, total_plano: float) -> dict:
+    """
+    Compara los dos planes y devuelve cuál conviene y cuánto se ahorra.
+
+    Patrón condicional ordenado:
+    - Si franjas < plano → conviene franjas.
+    - Si plano < franjas → conviene plano.
+    - Si iguales → empate.
+    """
+    ahorro = round(abs(total_franjas - total_plano), 2)
+@@ El ahorro es la diferencia entre los dos totales, siempre positiva gracias a abs().
+    if total_franjas < total_plano:
+        ganador = "franjas"
+        mensaje = f"Ahorras ${ahorro:,.0f} con el plan por franjas"
+    elif total_plano < total_franjas:
+        ganador = "plano"
+        mensaje = f"Ahorras ${ahorro:,.0f} con el plan plano"
+    else:
+        ganador = "empate"
+        mensaje = "Ambos planes tienen el mismo costo"
+@@ Condicional ordenado con tres casos posibles. Cada caso prepara el ganador y el mensaje.
+    return {
+        "ganador": ganador,
+        "ahorro":  ahorro,
+        "mensaje": mensaje,
+    }
+@@ Devuelve quién gana, cuánto se ahorra y la frase lista para mostrar.
+</script>
+<script type="text/plain" id="py4">
+def calcular_factura(cliente: str, consumo: list,
+                     precios: dict, precio_plano: float) -> dict:
+    """
+    Orquesta todo el cálculo y devuelve un dict con la factura completa.
+    Esta es la única función que app.py necesita llamar.
+    """
+    if len(consumo) != 24:
+        raise ValueError("El consumo debe tener exactamente 24 valores.")
+@@ Es la función principal. Primero valida: si no hay exactamente 24 valores, lanza un error.
+    franjas    = calcular_por_franjas(consumo, precios)
+    total_plan = calcular_plan_plano(franjas["total_kwh"], precio_plano)
+    comparador = comparar_planes(franjas["total_costo"], total_plan)
+@@ Orquesta: llama a las tres funciones pequeñas en orden y guarda sus resultados.
+    return {
+        "cliente":          cliente,
+        "fecha":            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "consumo":          consumo,
+        "precios":          precios,
+        "precio_plano":     precio_plano,
+        # desglose
+        "kwh_por_franja":   franjas["kwh_por_franja"],
+        "costo_por_franja": franjas["costo_por_franja"],
+        "total_kwh":        franjas["total_kwh"],
+        "total_franjas":    franjas["total_costo"],
+        "total_plano":      total_plan,
+        # comparador
+        "ganador":          comparador["ganador"],
+        "ahorro":           comparador["ahorro"],
+        "mensaje_ahorro":   comparador["mensaje"],
+        # pico
+        "hora_pico":        franjas["hora_pico"],
+        "consumo_pico_kwh": franjas["consumo_pico_kwh"],
+    }
+@@ Junta todo en un solo diccionario: datos del cliente, desglose, comparación y hora pico.
+</script>
+<script type="text/plain" id="py5">
+def simular_reduccion_punta(consumo: list, porcentaje: float) -> list:
+    """
+    Genera una copia del consumo donde las horas de punta
+    tienen su valor reducido por `porcentaje` (0.0–1.0).
+    El consumo de las demás franjas no cambia.
+
+    Patrón transformación: recorre, filtra por franja, genera lista nueva.
+    Importante: NO modifica la lista original (trabajamos con copia).
+    """
+@@ Simula qué pasa si reduces el consumo en las horas de punta un cierto porcentaje.
+    nuevo_consumo = consumo[:]          # copia explícita para no mutar el original
+@@ La copia con [:] evita modificar la lista original. Es un detalle importante.
+    for hora in HORAS_POR_FRANJA["punta"]:
+        nuevo_consumo[hora] = round(consumo[hora] * (1 - porcentaje), 3)
+    return nuevo_consumo
+@@ Solo recorre las 4 horas de punta y les resta el porcentaje. Devuelve la lista nueva.
+</script>
+<script type="text/plain" id="py6">
+RUTA_DATOS = os.path.join(os.path.dirname(__file__), "datos")
+
+
+def cargar_json(ruta: str) -> dict:
+    """Lee un archivo JSON y devuelve el dict. Lanza IOError si no existe."""
+    with open(ruta, "r", encoding="utf-8") as f:
+        return json.load(f)
+@@ La carpeta datos/ se ubica junto al archivo. cargar_json lee un JSON y lo devuelve como diccionario.
+def guardar_factura(factura: dict, nombre_archivo: str = None) -> str:
+    """
+    Guarda la factura en datos/<nombre>.json.
+    Si no se pasa nombre, usa la fecha como nombre.
+    Devuelve la ruta donde se guardó.
+    """
+    if nombre_archivo is None:
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        nombre_archivo = f"factura_{ts}.json"
+
+    ruta_salida = os.path.join(RUTA_DATOS, nombre_archivo)
+    with open(ruta_salida, "w", encoding="utf-8") as f:
+        json.dump(factura, f, ensure_ascii=False, indent=2)
+    return ruta_salida
+@@ Guarda la factura como JSON. Si no das nombre, usa la fecha y la hora, así nunca se pisan los archivos.
+def listar_facturas_guardadas() -> list:
+    """
+    Lee todos los JSON de datos/ que empiecen con 'factura_'.
+    Devuelve lista de dicts con {nombre, ruta, cliente, fecha, total}.
+    Patrón filtrado: solo carga los archivos que nos interesan.
+    """
+    historial = []
+    if not os.path.isdir(RUTA_DATOS):
+        return historial
+
+    for nombre in sorted(os.listdir(RUTA_DATOS)):
+        if nombre.startswith("factura_") and nombre.endswith(".json"):
+            ruta = os.path.join(RUTA_DATOS, nombre)
+            try:
+                datos = cargar_json(ruta)
+                historial.append({
+                    "nombre":        nombre,
+                    "ruta":          ruta,
+                    "cliente":       datos.get("cliente", "—"),
+                    "fecha":         datos.get("fecha", "—"),
+                    "total_franjas": datos.get("total_franjas", 0),
+                    "total_plano":   datos.get("total_plano", 0),
+                    "ganador":       datos.get("ganador", "—"),
+                    "ahorro":        datos.get("ahorro", 0),
+                })
+            except (json.JSONDecodeError, KeyError):
+                pass   # archivo corrupto: lo ignoramos
+
+    return historial
+@@ Arma el historial: recorre la carpeta, filtra los archivos factura_*.json y los lee. Si uno está dañado, lo ignora con try/except.
+</script>
+<script type="text/plain" id="py7">
+def generar_documento_html(factura: dict) -> str:
+    """
+    Genera un documento HTML autónomo, elegante e imprimible de la factura.
+    Incluye estilos de impresión (@media print) para generar un PDF perfecto
+    con Ctrl + P desde cualquier navegador.
+    """
+@@ Convierte el diccionario de la factura en un documento HTML que se imprime como PDF.
+    cliente = factura.get("cliente", "Cliente")
+    fecha = factura.get("fecha", "")
+    total_kwh = factura.get("total_kwh", 0.0)
+    total_franjas = factura.get("total_franjas", 0.0)
+    total_plano = factura.get("total_plano", 0.0)
+    ganador = factura.get("ganador", "franjas")
+    ahorro = factura.get("ahorro", 0.0)
+    precios = factura.get("precios", {})
+    kwh_f = factura.get("kwh_por_franja", {})
+    costo_f = factura.get("costo_por_franja", {})
+
+    total_base = total_franjas if total_franjas > 0 else 1.0
+@@ Extrae los datos con .get() y un valor por defecto, para que no falle si falta alguno.
+    filas = []
+    franjas_info = [
+        ("Valle", "00:00–05:00h y 22:00–23:00h (8h)", "valle"),
+        ("Normal", "06:00–17:00h (12h)", "normal"),
+        ("Punta", "18:00–21:00h (4h)", "punta"),
+    ]
+
+    for nombre, rango, clave in franjas_info:
+        kwh = kwh_f.get(clave, 0.0)
+        pu = precios.get(clave, 0.0)
+        sub = costo_f.get(clave, 0.0)
+        pct = (sub / total_base) * 100
+        filas.append(f"<tr> ...celdas con {kwh:.2f} kWh, ${pu:,.0f}, ${sub:,.0f} y {pct:.1f}% ... </tr>")
+
+    filas_html = "".join(filas)
+@@ Una fila de tabla por franja, con consumo, tarifa, subtotal y su porcentaje del total. La plantilla de cada fila se resume aquí.
+    html = f"""<!DOCTYPE html>
+<html lang="es">
+  ... estilos CSS y plantilla de la factura (unas 120 líneas) ...
+  <div class="total-monto">${(total_franjas if ganador == 'franjas' else total_plano):,.0f}</div>
+</html>"""
+    return html
+@@ La plantilla es un f-string gigante: las llaves {} insertan los valores. Aquí se muestra abreviada.
+</script>
+<script type="text/plain" id="py8">
+if __name__ == "__main__":
+    consumo_test = [1.0] * 24
+    precios_test = {"valle": 500, "normal": 800, "punta": 1200}
+    plano_test   = 800
+
+    f = calcular_factura("Casa 12", consumo_test, precios_test, plano_test)
+@@ Solo corre al ejecutar python logica.py. Prepara el caso de verificación: 24 horas a 1 kWh.
+    print(f"Total franjas:    ${f['total_franjas']:,.0f}  (esperado: $18,400)")
+    print(f"Plan plano:       ${f['total_plano']:,.0f}  (esperado: $19,200)")
+    print(f"Ganador:          {f['ganador']}  (esperado: franjas)")
+    print(f"Ahorro:           ${f['ahorro']:,.0f}  (esperado: $800)")
+@@ Imprime cada resultado junto al valor esperado para compararlos a simple vista.
+    consumo_50 = simular_reduccion_punta(consumo_test, 0.50)
+    f2 = calcular_factura("Casa 12", consumo_50, precios_test, plano_test)
+    print(f"Punta -50% → Total franjas: ${f2['total_franjas']:,.0f}  (esperado: $16,000)")
+@@ Segunda verificación: reduce la punta a la mitad y el total debe ser $16.000.
+    assert consumo_test == [1.0] * 24, "ERROR: la lista original fue mutada"
+    print("OK — Todos los valores coinciden con el caso de verificación.")
+@@ El assert comprueba que la simulación no modificó la lista original.
+</script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],m=n=>"$"+Math.round(n).toLocaleString("es-CO"),kf=n=>n.toLocaleString("es-CO",{maximumFractionDigits:1});
+const S=$$(".slide"),H=S.map(s=>s.id);let cur=0,tm=null;
+function go(i){cur=Math.max(0,Math.min(S.length-1,i));clearInterval(tm);S.forEach((s,j)=>s.classList.toggle("on",j===cur));$$("#dots button").forEach((b,j)=>b.classList.toggle("on",j===cur));$("#cnt").textContent=(cur+1)+" / "+S.length;S[cur].scrollTop=0;try{history.replaceState(null,"","#"+H[cur])}catch(e){}}
+H.forEach((h,i)=>{const b=document.createElement("button");b.setAttribute("aria-label","Ir a "+h);b.onclick=()=>go(i);$("#dots").appendChild(b)});
+$("#pv").onclick=()=>go(cur-1);$("#nx").onclick=()=>go(cur+1);
+$$("[data-go]").forEach(b=>b.onclick=()=>go(+b.dataset.go));
+$("#fs").onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+document.addEventListener("keydown",e=>{if(e.target.closest("input,select"))return;const k=e.key;if(k==="ArrowRight"||k==="PageDown")go(cur+1);else if(k==="ArrowLeft"||k==="PageUp")go(cur-1);else if(k==="Home")go(0);else if(k==="End")go(S.length-1)});
+let sx=null;const dk=$("#deck");
+dk.addEventListener("pointerdown",e=>{sx=e.pointerType==="touch"&&!e.target.closest("input,select,.code,.hours")?e.clientX:null});
+dk.addEventListener("pointerup",e=>{if(sx!==null){const d=e.clientX-sx;if(Math.abs(d)>70)go(cur+(d<0?1:-1))}sx=null});
+window.addEventListener("hashchange",()=>{const i=H.indexOf(location.hash.slice(1));if(i>=0)go(i)});
+
+/* franjas */
+const Z=h=>h>=18&&h<=21?"p":h>=6&&h<=17?"n":"v";
+const IC={v:'<svg viewBox="0 0 64 64"><path d="M44 8a26 26 0 1 0 12 36A22 22 0 0 1 44 8z" fill="currentColor"/></svg>',n:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="12" fill="currentColor"/><path d="M32 6v8M32 50v8M6 32h8M50 32h8M14 14l6 6M44 44l6 6M14 50l6-6M44 20l6-6" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg>',p:'<svg viewBox="0 0 64 64"><path d="M36 4L12 36h16l-4 24 28-34H36z" fill="currentColor"/></svg>'};
+const INF={v:["Franja valle","$500 por kWh: la más barata. Buen momento para lavar o cargar equipos.","var(--valle)"],n:["Franja normal","$800 por kWh: precio intermedio.","var(--normal)"],p:["Franja punta","$1.200 por kWh: la más cara. Evita encender muchos equipos a la vez.","var(--punta)"]};
+const hb=[];for(let h=0;h<24;h++){const b=document.createElement("button");b.className="hb "+Z(h);b.textContent=h;b.setAttribute("aria-label","Hora "+h);b.onclick=()=>sel(h);$("#hrs").appendChild(b);hb.push(b)}
+function sel(h){const z=Z(h),f=INF[z];hb.forEach((b,i)=>b.classList.toggle("sel",i===h));$("#ic").innerHTML=IC[z];$("#ic").style.color=f[2];$("#t1").textContent=String(h).padStart(2,"0")+":00 · "+f[0];$("#t2").textContent=f[1]}
+$("#play").onclick=()=>{clearInterval(tm);let h=0;sel(0);tm=setInterval(()=>{h++;if(h>23){clearInterval(tm);return}sel(h)},320)};sel(19);
+
+/* codigo */
+const KW=/("[^"]*")|(#.*$|\/\/.*$)|\b(def|return|for|in|if|elif|else|import|with|as|try|except|raise|and|or|not|pass|None|True|False|const|sum|enumerate|reduce|forEach)\b|\b(\d+(?:\.\d+)?)\b/g;
+const hl=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(KW,(x,a,b,c,d)=>a?`<span class=s>${a}</span>`:b?`<span class=c>${b}</span>`:c?`<span class=k>${c}</span>`:`<span class=n2>${d}</span>`);
+const CODE={py:[["def franja(hora):",1],['    if 18 <= hora <= 21: return "punta"',1],['    if 6 <= hora <= 17: return "normal"',1],['    return "valle"',1],["",0],['totales = {"valle": 0, "normal": 0, "punta": 0}',2],["for hora, kwh in enumerate(consumo):",2],["    totales[franja(hora)] += kwh",2],["",0],["costo = sum(totales[f] * precio[f] for f in totales)",3],['plano = sum(consumo) * precio["plano"]',4]],
+js:[["const franja = h =>",1],['  h >= 18 && h <= 21 ? "punta" :',1],['  h >= 6 && h <= 17 ? "normal" : "valle";',1],["",0],["const t = { valle: 0, normal: 0, punta: 0 };",2],["kwh.forEach((v, h) => { t[franja(h)] += v; });",2],["",0],["const fr = t.valle*p.valle + t.normal*p.normal + t.punta*p.punta;",3],["const pl = kwh.reduce((a, v) => a + v, 0) * p.plano;",4]]};
+const ST={1:["Clasifica la hora","Cada hora cae en una franja: 18 a 21 punta, 6 a 17 normal, el resto valle.",'franja(19)  →  "punta"'],2:["Acumula los kWh","Un ciclo recorre las 24 horas y suma el consumo en la franja que le toca.","valle 8 kWh · normal 12 kWh · punta 4 kWh"],3:["Costo por franjas","Multiplica cada total por su precio y suma.","8×500 + 12×800 + 4×1.200 = $18.400"],4:["Costo plano","Todo el consumo se multiplica por un solo precio.","24×800 = $19.200  →  ahorro con franjas: $800"]};
+let lang="py",step=0;
+function drawCode(){const L=CODE[lang];$("#cd").className="code rv"+(step?" f":"");$("#cd").innerHTML=L.map(([t,s])=>`<span class="ln${s&&s===step?" hl":""}">${hl(t)||" "}</span>`).join("");
+ if(step){$("#st").textContent=step+". "+ST[step][0];$("#sd").textContent=ST[step][1];$("#out").innerHTML=Object.keys(ST).filter(k=>k<=step).map(k=>`<span class="ln hl">${ST[k][2]}</span>`).join("")}else{$("#st").textContent="Elige un paso";$("#out").innerHTML=""}
+ $$("[data-s]").forEach(b=>b.classList.toggle("on",+b.dataset.s===step));$$("[data-l]").forEach(b=>b.classList.toggle("on",b.dataset.l===lang))}
+$$("[data-l]").forEach(b=>b.onclick=()=>{lang=b.dataset.l;drawCode()});
+$$("[data-s]").forEach(b=>b.onclick=()=>{clearInterval(tm);step=+b.dataset.s;drawCode()});
+$("#run").onclick=()=>{clearInterval(tm);step=0;tm=setInterval(()=>{step++;drawCode();if(step>=4)clearInterval(tm)},1600)};drawCode();
+
+/* calculadora */
+const PCT={1:60,2:50,3:15,4:0,5:20,6:20};
+function calc(){const a=+$("#kv").value,b=+$("#kn").value,c=+$("#kp").value;$("#o1").textContent=kf(a)+" kWh";$("#o2").textContent=kf(b)+" kWh";$("#o3").textContent=kf(c)+" kWh";
+ const D=30,tot=a*8+b*12+c*4,fr=a*8*500+b*12*800+c*4*1200,pl=tot*800,E=+$("#est").value,L=+$("#cli").value,pc=PCT[E],mk=tot*D;
+ const ad=x=>{const mc=x*D,u=mk?mc/mk:0,sub=E<=3?pc/100*Math.min(mk,L)*u:0,con=E>=5?pc/100*mc:0;return{net:mc-sub+con,sub,con}};
+ const A=ad(fr),B=ad(pl),mx=Math.max(A.net,B.net,1);
+ $("#rk").textContent=kf(mk)+" kWh";$("#rf").textContent=m(A.net);$("#rp").textContent=m(B.net);$("#bf").style.width=A.net/mx*100+"%";$("#bp").style.width=B.net/mx*100+"%";
+ $("#vd").textContent=!tot?"Mueve los controles":A.net<B.net?"Gana franjas: ahorras "+m(B.net-A.net)+" al mes":A.net>B.net?"Gana el plan plano: ahorras "+m(A.net-B.net)+" al mes":"Los dos cuestan lo mismo";
+ $("#rn").textContent=E<=3?`Estrato ${E}: subsidio de ${pc} % sobre los primeros ${kf(Math.min(mk,L))} kWh, es decir −${m(A.sub)}. Lo que pase de ${L} kWh paga tarifa plena.`:E===4?"Estrato 4: tarifa plena, sin subsidio ni contribución.":`Estrato ${E}: contribución de ${pc} %, es decir +${m(A.con)}.`}
+["kv","kn","kp","est","cli"].forEach(i=>$("#"+i).addEventListener("input",calc));calc();
+
+/* factura */
+const FD=[["Cliente y NIT","El NIT lleva su dígito de verificación, calculado con los pesos oficiales (aquí 900123456 da 8)."],["Resumen de pago","El total, la fecha límite (10 días) y la referencia de 17 dígitos con dígito de control."],["Detalle del mes","Consumo de un día típico por los días del mes, con precio y valor de cada franja."],["Códigos de pago","Código de cliente, referencia y convenio opcional para pagar sin errores."]];
+$$("#chips [data-k]").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;$("#pp").classList.add("pick");$$(".paper .bk").forEach(x=>x.classList.toggle("hot",+x.dataset.k===k));$$("#chips .btn").forEach(x=>x.classList.toggle("on",x===b));$("#fh").textContent=FD[k][0];$("#fd").textContent=FD[k][1]});
+
+/* mapa */
+const FN={
+"calc()":["Suma los kWh por franja y calcula los dos planes.","const t = { valle: 0, normal: 0, punta: 0 };\nkwh.forEach((v, h) => { t[franja(h)] += v; });\nconst fr = t.valle*p.valle + t.normal*p.normal + t.punta*p.punta;"],
+"inv()":["Arma los datos de la factura: mes, NIT y referencia.","const dias = new Date(Y, M, 0).getDate();   // días del mes\nconst r = suma % 11; const dv = r > 1 ? 11 - r : r;   // dígito del NIT\nconst ref = base + (10 - suma(base) % 10) % 10;   // referencia"],
+"ajustes()":["Aplica el subsidio o la contribución del estrato.","const sub = E <= 3 ? pct/100 * Math.min(kwhMes, tope) * precioProm : 0;\nconst con = E >= 5 ? pct/100 * costoMes : 0;\nconst total = costoMes - sub + con;"],
+"tips()":["Genera las sugerencias de ahorro.","const mover = t.punta / 2;\nconst ahorro = mover * (p.punta - p.valle) * dias;\n// Pasa 2 kWh a la franja valle y ahorras ..."],
+"descargar()":["Dibuja el PDF y lo guarda.","const d = new jsPDF({ unit: \"mm\", format: \"a4\" });\nd.text(\"TOTAL A PAGAR\", 118, y);\nawait dl.save({ filename: \"factura.pdf\", data: d.output(\"arraybuffer\") });"]};
+Object.keys(FN).forEach((k,i,a)=>{const b=document.createElement("button");b.className="btn o";b.textContent=k;b.onclick=()=>{$$("#fl .btn").forEach(x=>x.classList.toggle("on",x===b));$("#mh").textContent=k;$("#md").textContent=FN[k][0];$("#mc").innerHTML=FN[k][1].split("\n").map(t=>`<span class="ln">${hl(t)}</span>`).join("")};$("#fl").appendChild(b);if(i<a.length-1){const s=document.createElement("span");s.textContent="→";s.className="mut";$("#fl").appendChild(s)}});
+$("#fl .btn").click();
+/* python completo */
+const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const CH=[["1 · Franjas","py1",'franja_de_hora(19)  →  "punta"\nfranja_de_hora(3)   →  "valle"'],
+["2 · Por franjas","py2","kwh_por_franja    →  {'valle': 8.0, 'normal': 12.0, 'punta': 4.0}\ncosto_por_franja  →  {'valle': 4000.0, 'normal': 9600.0, 'punta': 4800.0}\ntotal_costo       →  18400.0\nhora_pico         →  0  (en empate gana la primera hora)"],
+["3 · Plano y comparar","py3",'calcular_plan_plano(24.0, 800)  →  19200.0\ncomparar_planes(18400.0, 19200.0)\n  ganador → "franjas" · ahorro → 800.0\n  mensaje → "Ahorras $800 con el plan por franjas"'],
+["4 · Factura completa","py4",'total_franjas → 18400.0 · total_plano → 19200.0\nganador → "franjas" · ahorro → 800.0\ncon 23 valores → ValueError'],
+["5 · Simulador","py5","simular_reduccion_punta([1.0]*24, 0.50)\n  horas 18 a 21 → 0.5 (las demás siguen en 1.0)\n  total por franjas → $16.000\n  la lista original no cambia"],
+["6 · JSON","py6","guardar_factura(f)  →  datos/factura_20261121_120000.json  (ejemplo)\nlistar_facturas_guardadas()  →  lista con nombre, cliente, fecha, totales y ganador"],
+["7 · Documento HTML","py7","generar_documento_html(f)  →  texto HTML completo\nSe abre en el navegador y Ctrl + P lo guarda como PDF."],
+["8 · Pruebas","py8","Total franjas:    $18,400  (esperado: $18,400)\nPlan plano:       $19,200\nGanador:          franjas\nAhorro:           $800\nPunta -50% → Total franjas: $16,000\nOK — Todos los valores coinciden con el caso de verificación."]];
+let ci=0,bi=0,BL=[];
+function parse(id){const B=[];let c=[];document.getElementById(id).textContent.replace(/^\n/,"").split("\n").forEach(l=>{if(l.startsWith("@@ ")){B.push([c.join("\n"),l.slice(3)]);c=[]}else c.push(l)});return B}
+function drawPy(){const L=[];let inD=false;BL.forEach(([c,n],k)=>c.split("\n").forEach((t,j)=>{const q=(t.match(/"""/g)||[]).length,d=inD||q>0;if(q%2)inD=!inD;L.push(`<span class="ln${k===bi?" hl":""}${j===0&&k?" bs":""}" data-b="${k}">${d?`<span class=c>${esc(t)}</span>`:hl(t)||" "}</span>`)}));$("#pc").innerHTML=L.join("");$("#pn").textContent="Bloque "+(bi+1)+" de "+BL.length+": "+BL[bi][1];const h=$("#pc .hl");if(h)h.scrollIntoView({block:"nearest",behavior:"smooth"})}
+function showCh(i){ci=i;bi=0;BL=parse(CH[i][1]);$$("#chs .btn").forEach((b,j)=>b.classList.toggle("on",j===i));$("#pt").textContent=CH[i][0];$("#po").innerHTML=CH[i][2].split("\n").map(t=>`<span class="ln">${esc(t)}</span>`).join("");$("#pc").scrollTop=0;drawPy()}
+CH.forEach((c,i)=>{const b=document.createElement("button");b.className="btn o";b.textContent=c[0];b.onclick=()=>showCh(i);$("#chs").appendChild(b)});
+$("#pc").onclick=e=>{const l=e.target.closest(".ln");if(l){bi=+l.dataset.b;drawPy()}};
+$("#pnx").onclick=()=>{bi=(bi+1)%BL.length;drawPy()};$("#pbk").onclick=()=>{bi=(bi-1+BL.length)%BL.length;drawPy()};
+showCh(0);
+{const i=H.indexOf(location.hash.slice(1));go(i>=0?i:0)}
+</script>
+</body>
+</html>
